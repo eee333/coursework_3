@@ -1,5 +1,5 @@
 from project.config import DevelopmentConfig
-from project.dao.models import Genre, Director, Movie
+from project.dao.models import Genre, Director, Movie, User
 from project.server import create_app, db
 
 app = create_app(DevelopmentConfig)
@@ -12,4 +12,5 @@ def shell():
         "Genre": Genre,
         "Director": Director,
         "Movie": Movie,
+        "User": User,
     }
