@@ -46,6 +46,8 @@ class UserPatchView(Resource):
         req_json = request.json
         if not req_json:
             abort(400, message="Bad Request")
+        if not req_json.get('password_1') or not req_json.get('password_2'):
+            abort(400, message="Bad Request")
         if not req_json.get('id'):
             req_json['id'] = user_id
         try:

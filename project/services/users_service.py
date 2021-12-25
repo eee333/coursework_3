@@ -2,7 +2,7 @@ from project.dao import UserDAO
 from project.exceptions import ItemNotFound
 from project.schemas.user import UserSchema
 from project.services.base import BaseService
-from project.tools.security import generate_password_digest
+from project.tools.security import generate_password_digest, compare_passwords
 
 
 class UsersService(BaseService):
@@ -34,11 +34,12 @@ class UsersService(BaseService):
         return UserSchema().dump(user)
 
     def update_pass(self, data_in):
-        user_pass = data_in.get("password")
-        if not user_pass:
-            raise ItemNotFound
+        user_pass_1 = data_in.get("password_1")
+        user_pass_2 = data_in.get("password_2")
+        user = UserDAO(self._db_session).get_by_id(data_in.get("id"))
+        if compare_passwords(user.password, user_pass_1):
+            data_in["password"] = generate_password_digest(user_pass_2)
+            user_upd = UserDAO(self._db_session).update(data_in)
+            return UserSchema().dump(user_upd)
         else:
-            data_in["password"] = generate_password_digest(user_pass)
-            user = UserDAO(self._db_session).update(data_in)
-            return UserSchema().dump(user)
-
+            raise ItemNotFound
