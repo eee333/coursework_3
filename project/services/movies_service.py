@@ -16,8 +16,12 @@ class MoviesService(BaseService):
         movies = MovieDAO(self._db_session).get_all()
         return MovieSchema(many=True).dump(movies)
 
-    def get_limit_movies(self, page):
-        limit = current_app.config["ITEMS_PER_PAGE"]
-        offset = (page - 1) * limit
-        movies = MovieDAO(self._db_session).get_limit(limit=limit, offset=offset)
+    def get_filter_movies(self, filter_args):
+        limit = 0
+        offset = 0
+        if filter_args.get("page"):
+            limit = current_app.config["ITEMS_PER_PAGE"]
+            offset = (filter_args.get("page") - 1) * limit
+        status = filter_args.get("status")
+        movies = MovieDAO(self._db_session).get_filter(limit=limit, offset=offset, status=status)
         return MovieSchema(many=True).dump(movies)
