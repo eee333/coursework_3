@@ -12,3 +12,6 @@ class GenreDAO:
 
     def get_all(self):
         return self._db_session.query(Genre).all()
+
+    def get_limit(self, limit, offset):
+        return self._db_session.query(Genre).limit(limit).offset(offset).all()

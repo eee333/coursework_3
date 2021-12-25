@@ -12,3 +12,6 @@ class DirectorDAO:
 
     def get_all(self):
         return self._db_session.query(Director).all()
+
+    def get_limit(self, limit, offset):
+        return self._db_session.query(Director).limit(limit).offset(offset).all()

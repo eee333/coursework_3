@@ -16,6 +16,9 @@ class UserDAO:
     def get_all(self):
         return self._db_session.query(User).all()
 
+    def get_limit(self, limit, offset):
+        return self._db_session.query(User).limit(limit).offset(offset).all()
+
     def create(self, data_in):
         obj = User(**data_in)
         self._db_session.add(obj)

@@ -12,3 +12,6 @@ class MovieDAO:
 
     def get_all(self):
         return self._db_session.query(Movie).all()
+
+    def get_limit(self, limit, offset):
+        return self._db_session.query(Movie).limit(limit).offset(offset).all()
