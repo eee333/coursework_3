@@ -3,6 +3,7 @@ from flask_restx import abort, Namespace, Resource, reqparse
 from project.exceptions import ItemNotFound
 from project.services import GenresService
 from project.setup_db import db
+from project.tools.security import auth_required
 
 genres_ns = Namespace("genres")
 parser = reqparse.RequestParser()
@@ -12,6 +13,7 @@ parser.add_argument('page', type=int)
 @genres_ns.route("/")
 class GenresView(Resource):
     @genres_ns.expect(parser)
+    @auth_required
     @genres_ns.response(200, "OK")
     def get(self):
         """Get all genres"""
@@ -24,6 +26,7 @@ class GenresView(Resource):
 
 @genres_ns.route("/<int:genre_id>")
 class GenreView(Resource):
+    @auth_required
     @genres_ns.response(200, "OK")
     @genres_ns.response(404, "Genre not found")
     def get(self, genre_id: int):

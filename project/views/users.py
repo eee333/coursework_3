@@ -3,6 +3,7 @@ from flask import request
 from project.exceptions import ItemNotFound
 from project.services import UsersService
 from project.setup_db import db
+from project.tools.security import auth_required
 
 users_ns = Namespace("users")
 parser = reqparse.RequestParser()
@@ -12,6 +13,7 @@ parser.add_argument('page', type=int)
 @users_ns.route("/")
 class UsersView(Resource):
     @users_ns.expect(parser)
+    @auth_required
     @users_ns.response(200, "OK")
     def get(self):
         """Get all users"""
@@ -23,6 +25,7 @@ class UsersView(Resource):
 
 @users_ns.route("/<int:user_id>")
 class UserView(Resource):
+    @auth_required
     @users_ns.response(200, "OK")
     @users_ns.response(404, "User not found")
     def get(self, user_id: int):
@@ -46,6 +49,7 @@ class UserView(Resource):
 
 @users_ns.route("/password/<int:user_id>")
 class UserPatchView(Resource):
+    @auth_required
     @users_ns.response(200, "OK")
     @users_ns.response(404, "User not found")
     def put(self, user_id: int):

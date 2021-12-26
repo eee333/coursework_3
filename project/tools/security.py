@@ -3,7 +3,7 @@ import base64
 import hmac
 import calendar
 import datetime
-from flask import current_app, abort
+from flask import current_app, abort, request
 import jwt
 
 from project.exceptions import ItemNotFound
@@ -18,7 +18,7 @@ def generate_password_digest(password):
     ))
 
 
-def auth_check(request):
+def auth_check():
     if "Authorization" not in request.headers:
         return False
     token = request.headers["Authorization"].split("Bearer ")[-1]
