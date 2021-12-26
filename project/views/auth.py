@@ -38,5 +38,5 @@ class AuthRegisterView(Resource):
         req_json = request.json
         if not req_json:
             abort(400, message="Bad Request")
-        new_user = UsersService(db.session).create(req_json)
-        return f"Created id: {new_user['id']}", 201
+        return UsersService(db.session).create(req_json)
+
