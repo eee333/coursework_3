@@ -1,9 +1,10 @@
 import pytest
 
 from project.dao.models import Genre
+from tests.views.auth_mock import AuthMock
 
 
-class TestGenresView:
+class TestGenresView(AuthMock):
     url = "/genres/"
 
     @pytest.fixture
@@ -13,7 +14,7 @@ class TestGenresView:
         db.session.commit()
         return g
 
-    def test_get_genres(self, client, genre):
+    def test_get_genres(self, client, genre, auth_mock):
         response = client.get(self.url)
         assert response.status_code == 200
         assert response.json == [
@@ -21,7 +22,7 @@ class TestGenresView:
         ]
 
 
-class TestGenreView:
+class TestGenreView(AuthMock):
     url = "/genres/{genre_id}"
 
     @pytest.fixture
@@ -31,11 +32,11 @@ class TestGenreView:
         db.session.commit()
         return g
 
-    def test_get_genre(self, client, genre):
+    def test_get_genre(self, client, genre, auth_mock):
         response = client.get(self.url.format(genre_id=genre.id))
         assert response.status_code == 200
         assert response.json == {"id": genre.id, "name": genre.name}
 
-    def test_genre_not_found(self, client):
-        response = client.get(self.url.format(genre_id=1))
+    def test_genre_not_found(self, client, auth_mock):
+        response = client.get(self.url.format(genre_id=10))
         assert response.status_code == 404

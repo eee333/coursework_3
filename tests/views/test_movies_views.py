@@ -1,9 +1,10 @@
 import pytest
 
 from project.dao.models import Movie
+from tests.views.auth_mock import AuthMock
 
 
-class TestMoviesView:
+class TestMoviesView(AuthMock):
     url = "/movies/"
 
     @pytest.fixture
@@ -21,7 +22,7 @@ class TestMoviesView:
         db.session.commit()
         return m
 
-    def test_get_movies(self, client, movie):
+    def test_get_movies(self, client, movie, auth_mock):
         response = client.get(self.url)
         assert response.status_code == 200
         assert response.json == [
@@ -38,7 +39,7 @@ class TestMoviesView:
         ]
 
 
-class TestMovieView:
+class TestMovieView(AuthMock):
     url = "/movies/{movie_id}"
 
     @pytest.fixture
@@ -56,7 +57,7 @@ class TestMovieView:
         db.session.commit()
         return m
 
-    def test_get_movie(self, client, movie):
+    def test_get_movie(self, client, movie, auth_mock):
         response = client.get(self.url.format(movie_id=movie.id))
         assert response.status_code == 200
         assert response.json == {
@@ -70,6 +71,6 @@ class TestMovieView:
             "director_id": movie.director_id
         }
 
-    def test_movie_not_found(self, client):
+    def test_movie_not_found(self, client, auth_mock):
         response = client.get(self.url.format(movie_id=1))
         assert response.status_code == 404
